@@ -1,0 +1,29 @@
+<h1>Attendance</h1>
+
+{% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {% if active_attendance %}
+        {%if last_event!=None %}
+             <button type="submit" name="action" value="private-out">Check in</button>
+             <button type="submit" name="action" value="business_out">Check in</button>
+             <button type="submit" name="action" value="check_out">Check in</button>
+        {% elif last_event='private_out'%}
+             <button type="submit" name="action" value="private-in">Check in</button>
+        {% elif last_event='business_out %'}
+             <button type="submit" name="action" value="business-in">Check in</button>
+        {% and(last_event='private_in' or last_event='business_in') %}
+         <button type="submit" name="action" value="private-out">Check in</button>
+             <button type="submit" name="action" value="business_out">Check in</button>
+             <button type="submit" name="action" value="check_out">Check in</button>
+        {% endif %}     
+       <p>Korisnik je trenutno prijavljen na posao</p>
+    {% else %}
+        <button type="submit" name="action" value="check-in">Check in</button>
+    {% endif %}
+</form> 
