@@ -1,0 +1,76 @@
+body{
+    display: flex;
+    margin:0;
+    height: 100vh;
+    width:100vw;
+}
+
+nav{
+    width:20%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(33, 30, 30);
+}
+.logo{
+    font-size: 28px;
+    font-weight: bold;
+    color: rgb(220, 220, 220);
+    text-align: center;
+    padding: 15px;
+    letter-spacing: 1px;
+}
+.lista ul{
+    list-style: none;
+    margin:0px;
+    padding:0;
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+}
+.lista ul a{
+    text-decoration: none;
+    color: rgb(160, 160, 149);
+    padding:5px;
+    display:block;
+    border-radius: 6px;
+}
+.lista ul a:hover{
+    background-color: gray;
+    color: rgb(49, 47, 47);
+}
+
+main{
+    flex: 1;
+    padding: 20px;
+}
+
+nav form{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top:auto;
+    margin-bottom:12;
+}
+
+nav button{
+    width: 80%;
+    padding:10px;
+    border:none;
+    border-radius: 6px;
+    background-color: rgb(134, 25, 25);
+    color:white;
+    font-weight: bold;
+    cursor: pointer;
+}
+nav button:hover{
+    background-color: brown;
+}
+
+main{
+    flex:1;
+    padding:20px;
+    background-color: rgb(244, 238, 238);
+    overflow: auto;
+}

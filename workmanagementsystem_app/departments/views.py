@@ -103,5 +103,13 @@ def login_page(request):
             {'form': form}
         )
 
+def logout_view(request):
+    if request.method=="POST":
+        logout(request)
+        return redirect('login_page')
+    return redirect('home')     
+    
+       
+@login_required
 def home_page(request):
-    return render(request, 'departments/home.html')
+    return render(request, 'departments/home.html') 

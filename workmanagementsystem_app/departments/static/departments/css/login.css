@@ -6,7 +6,19 @@ body{
     display:flex;
     justify-content: center;
     align-items: center;
+    background-image: url('../images/login.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
  
+}
+.logo{
+    font-size: 28px;
+    font-weight: bold;
+    color: rgb(220, 220, 220);
+    text-align: center;
+    padding: 15px;
+    letter-spacing: 1px;
 }
 .login-card{
     width:50%;
