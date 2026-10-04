@@ -169,6 +169,12 @@ class Machine(models.Model):
 
 class Issue(models.Model):
 
+    PRIORITY_CHOICES = (
+    ('low', 'Low'),
+    ('medium', 'Medium'),
+    ('high', 'High'),
+    )
+
     ISSUESTATUS_CHOICES=[
         ('open', 'Open'),
         ('in_progress', 'In_progress'),
@@ -197,6 +203,12 @@ class Issue(models.Model):
         choices=ISSUESTATUS_CHOICES,
         default='open'
     )
+
+    priority = models.CharField(
+    max_length=10,
+    choices=PRIORITY_CHOICES,
+    default='medium'
+)
 
     def __str__(self):
         return f'{self.machine} : {self.reported_at}'
