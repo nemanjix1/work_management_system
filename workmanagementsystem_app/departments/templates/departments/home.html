@@ -1,6 +1,29 @@
 {% extends 'departments/base.html' %}
+{% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'departments/css/home.css' %}">
+{% endblock %}
 {% block content %}
     <h1>DASHBOARD</h1>
-    <p>Hello. dobro dosli u home page za vas nalog</p>
+
+    <div class="dashboard-cards">
+        <div class="projects common-card">
+            <h3>Projects</h3>
+            <p>Pregled i upravljanje projektima</p>
+            <a href="{% url 'projects_list' %}">Open</a>
+        </div>
+        <div class="machines common-card">
+            <h3>Machines</h3>
+            <p>Pregled masina i njihovog statusa</p>
+            <a href="#">Open</a>
+        </div>
+        <div class="issues common-card">
+            <h3>Issues</h3>
+            <p>Prijavljeni kvarovi i greske</p>
+            <a href="#">Open</a>
+        </div>
+    </div>
+    
+    
 {% endblock content %}

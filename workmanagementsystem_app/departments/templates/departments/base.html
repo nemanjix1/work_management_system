@@ -6,15 +6,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-   <link rel="stylesheet" href="{% static 'departments/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'departments/css/base.css' %}">
+    {% block extra_css %}
+    
+    {% endblock %} 
 </head>
 <body>
+     
     <nav>
         <div class="logo">SimGroup</div>
         <div class="lista">
             <ul>
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="#">Projects</a></li>
+                <li><a href="{% url 'home' %}"
+                    class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    Home
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'projects_list' %}"
+                    class="{% if request.resolver_match.url_name == 'projects_list' %}active{% endif %}">
+                    Projects
+                    </a>
+                </li>
                 <li><a href="#">Workers</a></li>
                 <li><a href="#">Departments</a></li>
                 <li><a href="#">Machines</a></li>
@@ -27,6 +40,19 @@
         </form>
     </nav>  
     <main>
+           <div class="my_profile">
+                <div class="profile-main">
+                    <h2>Username: {{request.user.username}}</h2>
+                    <p>Dobrodosao, {{request.user.first_name}}  {{request.user.last_name}}</p>
+                </div>
+            
+            <div class="profile-details">
+                <p class="profile-item">Role: {{request.user.role}}</p>
+                <p class="profile-item">Department: {{request.user.department}}</p>
+                <p class="profile-item">Team: {{request.user.team}}</p>
+            </div>
+            
+        </div>
         {% block content %}
         {% endblock content %}
     </main>

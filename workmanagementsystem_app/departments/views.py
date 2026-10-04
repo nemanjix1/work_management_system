@@ -108,8 +108,12 @@ def logout_view(request):
         logout(request)
         return redirect('login_page')
     return redirect('home')     
-    
-       
+
+
 @login_required
 def home_page(request):
-    return render(request, 'departments/home.html') 
+    return render(request, 'departments/home.html')
+     
+@login_required
+def projects_list(request):
+    return render(request, 'departments/projects_list.html')

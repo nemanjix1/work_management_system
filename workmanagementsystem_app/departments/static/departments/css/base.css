@@ -6,11 +6,13 @@ body{
 }
 
 nav{
-    width:20%;
+    width:250px;
     height: 100%;
     display: flex;
     flex-direction: column;
     background-color: rgb(33, 30, 30);
+    padding: 20px 12px;
+    box-sizing: border-box;
 }
 .logo{
     font-size: 28px;
@@ -19,6 +21,7 @@ nav{
     text-align: center;
     padding: 15px;
     letter-spacing: 1px;
+    padding-bottom:20px;
 }
 .lista ul{
     list-style: none;
@@ -26,24 +29,26 @@ nav{
     padding:0;
     display:flex;
     flex-direction: column;
-    gap:10px;
+    gap:14px;
 }
 .lista ul a{
     text-decoration: none;
     color: rgb(160, 160, 149);
-    padding:5px;
+    padding:15px;
     display:block;
     border-radius: 6px;
+    font-size:20px;
 }
 .lista ul a:hover{
     background-color: gray;
     color: rgb(49, 47, 47);
 }
 
-main{
-    flex: 1;
-    padding: 20px;
+.lista ul a.active{
+    background-color: rgb(90,90,90);
+    color:white;
 }
+
 
 nav form{
     width: 100%;
@@ -51,7 +56,7 @@ nav form{
     justify-content: center;
     align-items: center;
     margin-top:auto;
-    margin-bottom:12;
+    margin-bottom:12px;
 }
 
 nav button{
@@ -70,7 +75,61 @@ nav button:hover{
 
 main{
     flex:1;
-    padding:20px;
+    padding:30px;
     background-color: rgb(244, 238, 238);
     overflow: auto;
+}
+
+.my_profile{
+    background-color: rgb(211, 208, 208);
+    padding:20px;
+    border:1px solid rgb(229, 227, 227);
+    border-radius:8px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap:20px;
+    flex-wrap: wrap;
+}
+
+.my_profile h2{
+    margin: 5px;
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
+.my_profile p{
+    font-size: 16px;
+    color: rgb(115, 111, 111);
+    margin:8px;
+}
+
+.profile-main{
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profile-details{
+    display: flex;
+    flex-direction: column;
+    gap:26px;
+    align-items: center;
+}
+
+.profile-details .profile-item{
+    margin:0;
+    color: rgb(115, 111, 111);
+}
+.profile-item{
+    background-color: rgb(245, 245, 245);
+    padding:10px;
+    border-radius:6px;
+    border:1px solid black;
+    font-size:12px;
+
 }
