@@ -1,11 +1,12 @@
 from django.shortcuts import render,redirect
-from .models import Attendance,AttendanceEvent
+from .models import Attendance,AttendanceEvent,Project,Department
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.forms import AuthenticationForm
+from .forms import ProjectForm
 def attendance_login_page(request):
     if request.method=="POST":
         username=request.POST.get("username")
@@ -113,7 +114,23 @@ def logout_view(request):
 @login_required
 def home_page(request):
     return render(request, 'departments/home.html')
-     
+
+
 @login_required
 def projects_list(request):
-    return render(request, 'departments/projects_list.html')
+    projects=Project.objects.all()
+    
+    return render(request, 'departments/projects_list.html', {'projects': projects})
+
+@login_required
+def project_add(request):
+    if request.method=="POST":
+        form=ProjectForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('projects_list')
+    else:
+        form=ProjectForm()
+    return render(request, 
+    'departments/projects_add.html', 
+    {'form': form})

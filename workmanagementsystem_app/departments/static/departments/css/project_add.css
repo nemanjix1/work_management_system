@@ -1,0 +1,39 @@
+.project-add-container{
+    width:100%;
+    box-sizing:border-box;
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+.project-form{
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    max-width: 800px;
+}
+
+.project-form p{
+    display: flex;
+    flex-direction: column;
+    gap:6px;
+}
+.project-form input,
+.project-form select{
+    padding:10px;
+    border:1px solid black;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.project-form button{
+    background-color: green;
+    color: white;
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    cursor: pointer;
+}

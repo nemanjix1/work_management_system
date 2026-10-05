@@ -1,0 +1,46 @@
+table{
+    width:100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+th{
+    background-color: gray;
+    color: white;
+    padding:10px;
+    text-align: left;
+}
+td{
+    padding:10px;
+    border-bottom:1px solid rgb(223, 220, 220);
+}
+tr:hover{
+    background-color: rgb(224, 220, 220);
+    color: black;
+}
+button{
+    padding:10px;
+    border-radius: 8px;
+    background-color: brown;
+    border:none;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-project-button{
+    padding:14px;
+    border:none;
+    background-color: rgb(25, 103, 25);
+    color:white;
+    border-radius: 8px;
+    cursor:pointer;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

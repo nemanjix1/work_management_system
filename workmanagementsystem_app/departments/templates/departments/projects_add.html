@@ -1,0 +1,16 @@
+{% extends 'departments/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'departments/css/project_add.css' %}">
+{% endblock %}
+{% block content %}
+<div class="project-add-container">
+    <h1>Add Project</h1>
+    <form method="post" class="project-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+{% endblock %}
