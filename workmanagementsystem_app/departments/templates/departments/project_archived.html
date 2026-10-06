@@ -1,0 +1,8 @@
+{% extends 'departments/base.html' %}
+{% block content %}
+    {% for project in projects %}
+        <p>{{project.name}}</p>
+    {% empty %}
+    <p> No archived projects</p>
+    {% endfor %}
+{% endblock content %}

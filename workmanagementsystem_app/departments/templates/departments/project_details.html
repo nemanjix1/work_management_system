@@ -1,0 +1,14 @@
+{% extends 'departments/base.html' %}
+
+{% block content %}
+    <h1> {{project.name}}</h1>
+    <p> Code: {{project.code}}</p>
+    <p>Status: {{project.status}}</p>
+    {% for department in project.departments.all %}
+        <p>{{department.name}}</p>
+    {% empty %}
+        <p>No departments</p>
+     {% endfor %}   
+     <a href="{% url 'project_edit' project.id %}">Edit Project</a>
+    <a href="{% url 'projects_list' %}">Vrati se nazad</a>
+{% endblock content %}

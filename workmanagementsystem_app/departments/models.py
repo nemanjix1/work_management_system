@@ -134,6 +134,14 @@ class Project(models.Model):
         Department
        
     )
+    is_archived=models.BooleanField(
+        default=False
+    )
+
+    archived_at=models.DateTimeField(
+        null=True,
+        blank=True
+    )
     
 
     def __str__(self):

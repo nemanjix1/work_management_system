@@ -9,5 +9,9 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout_view'),
     path('projects/', views.projects_list, name='projects_list'),
     path('projects/add_project/', views.project_add, name='projects_add_project'),
+    path('projects/project_detail/<int:project_id>/', views.project_details, name='project_details'),
+    path('projects/project_edit/<int:project_id>/', views.project_edit, name='project_edit'),
+    path('projects/archived/', views.archived_project, name='archived_projects'),
+    path('projects/<int:project_id>/archive/', views.project_archive, name='project_archive')
 ]
     

@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .models import Attendance,AttendanceEvent,Project,Department
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import ProjectForm
+from django.contrib.auth.decorators import permission_required
 def attendance_login_page(request):
     if request.method=="POST":
         username=request.POST.get("username")
@@ -118,11 +119,12 @@ def home_page(request):
 
 @login_required
 def projects_list(request):
-    projects=Project.objects.all()
+    projects=Project.objects.filter(is_archived=False)
     
     return render(request, 'departments/projects_list.html', {'projects': projects})
 
 @login_required
+@permission_required('departments.add_project', raise_exception=True)
 def project_add(request):
     if request.method=="POST":
         form=ProjectForm(request.POST)
@@ -134,3 +136,50 @@ def project_add(request):
     return render(request, 
     'departments/projects_add.html', 
     {'form': form})
+
+@login_required
+@permission_required('departments.view_project', raise_exception=True)
+def project_details(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    return render(request,
+                    'departments/project_details.html',
+                    {'project': project}
+                    )
+
+@login_required
+@permission_required('departments.change_project', raise_exception=True)
+def project_edit(request, project_id):
+    project=get_object_or_404(Project, pk=project_id)
+    if request.method=="POST":
+         form=ProjectForm(request.POST,instance=project)
+         if form.is_valid():
+            form.save()
+            return redirect('projects_list')
+    else:
+        form=ProjectForm(instance=project)
+    return render(
+        request,
+        'departments/project_edit.html',
+        {'form': form,
+         'project': project
+         }
+    )
+@login_required
+@permission_required('departments.change_project', raise_exception=True)
+def project_archive(request, project_id):
+    project=get_object_or_404(Project, pk=project_id)
+    if request.method=="POST":
+        project.is_archived=True
+        project.archived_at=timezone.now()
+        project.save()
+    return redirect('projects_list')
+
+@login_required
+@permission_required('departments.view_project', raise_exception=True)
+def archived_project(request):
+    projects=Project.objects.filter(is_archived=True)
+    return render(
+        request,
+        'departments/project_archived.html',
+        {'projects': projects}
+    )

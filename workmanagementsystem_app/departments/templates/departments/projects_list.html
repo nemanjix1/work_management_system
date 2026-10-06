@@ -6,7 +6,11 @@
 {% endblock %}
 {% block content %}
     <h1>Projects</h1>
-    <a class="add-project-button" href="{% url 'projects_add_project' %}"">Add Project</a>
+    {% if perms.departments.add_project %}
+        <a class="add-project-button" href="{% url 'projects_add_project' %}">
+            Add Project
+        </a>
+    {% endif %}
     <p>Lista projekata</p>
    <table>
         <thead>
@@ -33,7 +37,14 @@
                         {% endfor %}
                     </td>
                     <td>
-                        <button>Details</button>
+                        <a href="{% url 'project_details' project.id %}">Details</a>
+                        {% if perms.departments.change_project %}
+                            <a href="{% url 'project_edit' project.id %}">Edit</a>
+                            <form action="{% url 'project_archive' project.id %}" method="post" style="display:inline">
+                                {% csrf_token %}
+                                <button type="submit">Archive</button>
+                                </form>
+                        {% endif %}
                     </td>
                 </tr>
                   {% empty %}

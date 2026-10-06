@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import (
     Department,
     User,
@@ -16,9 +17,19 @@ from .models import (
 )
 
 # Register your models here.
-
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets + (
+        ('Podaci zaposlenog', {
+            'fields': ('role', 'phone_number', 'department', 'team'),
+        }),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Podaci zaposlenog', {
+            'fields': ('role', 'phone_number', 'department', 'team'),
+        }),
+    )
 admin.site.register(Department)
-admin.site.register(User)
 admin.site.register(Team)
 admin.site.register(Project)
 admin.site.register(Machine)
