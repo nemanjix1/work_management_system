@@ -6,8 +6,9 @@ from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import ProjectForm
+from .forms import ProjectForm,DepartmentForm
 from django.contrib.auth.decorators import permission_required
+from django.core.paginator import Paginator
 def attendance_login_page(request):
     if request.method=="POST":
         username=request.POST.get("username")
@@ -120,8 +121,12 @@ def home_page(request):
 @login_required
 def projects_list(request):
     projects=Project.objects.filter(is_archived=False)
-    
-    return render(request, 'departments/projects_list.html', {'projects': projects})
+    paginator=Paginator(projects, 4)
+    page_number=request.GET.get('page')
+    page_obj=paginator.get_page(page_number)    
+    return render(request, 
+    'departments/projects_list.html',
+     {'page_obj': page_obj})
 
 @login_required
 @permission_required('departments.add_project', raise_exception=True)
@@ -182,4 +187,53 @@ def archived_project(request):
         request,
         'departments/project_archived.html',
         {'projects': projects}
+    )
+
+@login_required
+def departments_list(request):
+    departments=Department.objects.all()
+    return render(request,
+                'departments/departments_list.html',
+                {'departments': departments}
+
+    )
+@login_required
+def department_detail(request, department_id):
+    department=get_object_or_404(Department, pk=department_id)
+    return render(
+        request,
+        'departments/department_details.html',
+        {'department': department}
+    )
+
+@login_required
+@permission_required('departments.add_department', raise_exception=True)
+def department_add(request):
+    if request.method=="POST":
+        form=DepartmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('departments_list')
+    else:
+         form=DepartmentForm()
+    return render(request,
+                    'departments/department_add.html',
+                    {'form': form}
+        )
+
+@login_required
+@permission_required('departments.change_department', raise_exception=True)
+def department_edit(request, department_id):
+    department=get_object_or_404(Department, pk=department_id)
+    if request.method=="POST":
+        form=DepartmentForm(request.POST, instance=department)
+        if form.is_valid():
+            form.save()
+            return redirect('departments_list')
+    else:
+        form=DepartmentForm(instance=department)
+    return render(request,
+                'departments/department_edit.html',
+                {'form': form}
+
     )

@@ -1,0 +1,41 @@
+{% extends 'departments/base.html' %}
+
+{% block content %}
+<h1>Departmans</h1>
+{% if perms.departments.add_department %}
+    <a href="{% url 'department_add' %}">Add departments</a>
+{% endif %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Location</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for department in departments %}
+        <tr>
+            <td>{{department.name}}</td>
+            <td>{{department.code}}</td>
+            <td>{{department.location}}</td>
+            <td>
+                <a href="{% url 'department_detail' department.id %}">Detail</a>
+                {% if perms.departments.change_department %}
+                    <a href="{% url 'department_edit' department.id %}">Edit</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">
+                    No departments
+                </td>
+            </tr>
+       
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock content %}

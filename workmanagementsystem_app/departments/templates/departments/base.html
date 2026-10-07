@@ -29,7 +29,12 @@
                     </a>
                 </li>
                 <li><a href="#">Workers</a></li>
-                <li><a href="#">Departments</a></li>
+                <li><a href="{% url 'departments_list' %}"
+                    class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    Department
+                    </a>
+
+                </li>
                 <li><a href="#">Machines</a></li>
                 <li><a href="#">Issues</a></li>
             </ul>

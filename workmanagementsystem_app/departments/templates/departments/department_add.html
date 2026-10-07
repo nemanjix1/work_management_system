@@ -1,0 +1,10 @@
+{% extends 'departments/base.html' %}
+{% block content %}
+<h2> Add department</h2>
+<form method="post">
+     {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">Add</button>
+</form>
+   
+{% endblock content %}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project
+from .models import Project, Department
 
 class ProjectForm(forms.ModelForm):
 
@@ -10,4 +10,15 @@ class ProjectForm(forms.ModelForm):
             'code',
             'status',
             'departments',
+        ]
+
+class DepartmentForm(forms.ModelForm):
+
+    class Meta:
+        model=Department
+        fields=[
+            'name',
+            'code',
+            'location',
+            'description',
         ]

@@ -1,0 +1,11 @@
+{% extends 'departments/base.html' %}
+{% block content %}
+    <h2>Department Details</h2>
+    <p>{{department.name}}</p>
+    <p>{{department.code}}</p>
+    <p>{{department.location}}</p>
+    <p>{{department.description}}</p>
+    {% if perms.departments.change_department %}
+        <a href="{% url 'department_edit' department.id %}">Edit department</a>
+    {% endif %}
+{% endblock content %}

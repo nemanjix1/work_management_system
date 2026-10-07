@@ -24,7 +24,7 @@
             
         </thead>
         <tbody>
-            {%  for project in projects%}
+            {%  for project in page_obj %}
                 <tr>
                     <td>{{project.name}}</td>
                     <td>{{project.code}}</td>
@@ -58,5 +58,19 @@
         </tbody>
       
    </table>
+
+   {% if page_obj.has_previous %}
+    <a href="?page={{page_obj.previous_page_number}}">
+        Previous
+    </a>
+    {% endif %}
+
+    <span>
+        Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{page_obj.next_page_number}}">Next</a>
+    {% endif %}
     
 {% endblock content %}

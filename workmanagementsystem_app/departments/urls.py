@@ -12,6 +12,10 @@ urlpatterns = [
     path('projects/project_detail/<int:project_id>/', views.project_details, name='project_details'),
     path('projects/project_edit/<int:project_id>/', views.project_edit, name='project_edit'),
     path('projects/archived/', views.archived_project, name='archived_projects'),
-    path('projects/<int:project_id>/archive/', views.project_archive, name='project_archive')
+    path('projects/<int:project_id>/archive/', views.project_archive, name='project_archive'),
+    path('departments/', views.departments_list, name='departments_list'),
+    path('departments/<int:department_id>/', views.department_detail, name='department_detail'),
+    path('departments/department_add/', views.department_add, name='department_add'),
+    path('departments/department_edit/<int:department_id>/', views.department_edit, name='department_edit')
 ]
     
