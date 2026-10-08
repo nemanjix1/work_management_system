@@ -1,12 +1,12 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import Attendance,AttendanceEvent,Project,Department
+from .models import User,Attendance,AttendanceEvent,Project,Department,Machine,Team
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import ProjectForm,DepartmentForm
+from .forms import ProjectForm,DepartmentForm, MachineForm,TeamForm
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 def attendance_login_page(request):
@@ -237,3 +237,84 @@ def department_edit(request, department_id):
                 {'form': form}
 
     )
+
+@login_required
+def machines_list(request):
+    machines=Machine.objects.all()
+    return render(request,
+                    'departments/machines_list.html',
+                    {'machines': machines}
+                    )
+@login_required
+def machine_detail(request, machine_id):
+    machine=get_object_or_404(Machine,pk=machine_id)
+    return render(request,
+                    'departments/machine_detail.html',
+                    {'machine': machine}
+                    )
+
+@login_required
+@permission_required('departments.add_machine', raise_exception=True)
+def machine_add(request):
+    if request.method=="POST":
+        form=MachineForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('machines_list')
+    else:
+        form=MachineForm()
+    return render(request,
+                    'departments/machine_add.html',
+                    {'form':form}
+                    )
+                    
+@login_required
+@permission_required('departments.change_machine', raise_exception=True)
+def machine_edit(request, machine_id):
+    machine=get_object_or_404(Machine, pk=machine_id)
+    if request.method=="POST":
+        form=MachineForm(request.POST, instance=machine)
+        if form.is_valid():
+            form.save()
+            return redirect('machines_list')
+    else:
+        form=MachineForm(instance=machine)
+    return render(request,
+                    'departments/machine_edit.html',
+                    {'form':form}
+                    )
+
+@login_required
+def teams_list(request):
+    teams=Team.objects.all()
+    return render(request,
+                    'departments/teams_list.html',
+                    {'teams':teams}
+                    )
+
+@login_required
+def team_detail(request,team_id):
+    team=get_object_or_404(Team, pk=team_id)
+    users=User.objects.filter(team=team)
+    return render(request,
+                    'departments/team_detail.html',
+                    {'team':team,
+                     'users':users}
+                    )
+
+@login_required
+@permission_required('departments.add_team', raise_exception=True)
+def team_add(request):
+    if request.method=="POST":
+        form=TeamForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('teams_list')
+    else:
+        form=TeamForm()
+    return render(request,
+                    'departments/team_add.html',
+                    {'form':form}
+
+    )
+

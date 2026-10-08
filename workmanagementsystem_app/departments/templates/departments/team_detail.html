@@ -1,0 +1,19 @@
+{% extends 'departments/base.html' %}
+{% block content %}
+<h2>Team's detail</h2>
+<p>{{team.name}}</p>
+<p>{{team.department}}</p>
+<p>{{team.team_leader}}</p>
+
+    <ul>
+        {% for user in users%}
+            <li>{{user.first_name}} {{user.last_name}}</li>
+    {% empty %}
+        <li>
+            Team have no  members
+        </li>
+      
+    {% endfor %}
+        </ul>
+
+{% endblock content %}

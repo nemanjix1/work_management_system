@@ -30,12 +30,15 @@
                 </li>
                 <li><a href="#">Workers</a></li>
                 <li><a href="{% url 'departments_list' %}"
-                    class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    class="{% if request.resolver_match.url_name == 'departments_lisy' %}active{% endif %}">
                     Department
                     </a>
 
                 </li>
-                <li><a href="#">Machines</a></li>
+                <li><a href="{% url 'machines_list' %}"
+                    class="{% if request.resolver_match.url_name == 'machines_list' %}active{% endif %}">
+                    Machines
+                    </a></li>
                 <li><a href="#">Issues</a></li>
             </ul>
         </div>

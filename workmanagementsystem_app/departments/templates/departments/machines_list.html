@@ -1,0 +1,40 @@
+{% extends 'departments/base.html' %}
+
+{% block content %}
+{% if perms.departments.add_machine %}
+    <a href="{% url 'machine_add' %}">Add machine</a>
+{% endif %}
+<h1>Machines:</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Status</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for machine in machines %}
+        <tr>
+            <td>{{machine.name}}</td>
+            <td>{{machine.code}}</td>
+            <td>{{machine.status}}</td>
+            <td>{{machine.department}}</td>
+            <td>
+                {% if perms.departments.change_machine %}
+                    <a href="{% url 'machine_edit' machine.id %}">Edit machine</a>
+                {% endif %}
+                <a href="{% url 'machine_detail' machine.id %}">Details</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">
+                No machines
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

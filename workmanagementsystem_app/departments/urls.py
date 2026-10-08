@@ -16,6 +16,15 @@ urlpatterns = [
     path('departments/', views.departments_list, name='departments_list'),
     path('departments/<int:department_id>/', views.department_detail, name='department_detail'),
     path('departments/department_add/', views.department_add, name='department_add'),
-    path('departments/department_edit/<int:department_id>/', views.department_edit, name='department_edit')
+    path('departments/department_edit/<int:department_id>/', views.department_edit, name='department_edit'),
+    path('machines/', views.machines_list, name='machines_list'),
+    path('machines/<int:machine_id>/', views.machine_detail, name='machine_detail'),
+    path('machines/machine_add/', views.machine_add, name='machine_add'),
+    path('machines/machine_edit/<int:machine_id>', views.machine_edit, name='machine_edit'),
+    path('teams/',views.teams_list, name='teams_list'),
+    path('teams/<int:team_id>/', views.team_detail, name='team_detail'),
+    path('teams/team_add',views.team_add, name='team_add'),
+    
+
 ]
     

@@ -1,0 +1,35 @@
+{% extends 'departments/base.html' %}
+
+{% block content %}
+{% if perms.departments.add_team %}
+    <a href="{% url 'team_add' %}">Add team</a>
+{% endif %}
+<h1>Teams:</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Departments</th>
+            <th>Team Leader</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in teams %}
+        <tr>
+            <td>{{team.name}}</td>
+            <td>{{team.department}}</td>
+            <td>{{team.team_leader.first_name}} {{team.team_leader.last_name}}</td>
+            <td><a href="{% url 'team_detail' team.id %}">Teams detail</a></td>
+            
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">
+                No Teams
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
