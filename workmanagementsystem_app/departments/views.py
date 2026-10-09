@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import ProjectForm,DepartmentForm, MachineForm,TeamForm
+from .forms import ProjectForm,DepartmentForm,WorkerForm,WorkerCreateForm,MachineForm,TeamForm
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 def attendance_login_page(request):
@@ -318,3 +318,64 @@ def team_add(request):
 
     )
 
+@login_required
+@permission_required('departments.change_team', raise_exception=True)
+def team_edit(request, team_id):
+    team=get_object_or_404(Team,pk=team_id)
+    if request.method=="POST":
+        form=TeamForm(request.POST, instance=team)
+        if form.is_valid():
+            form.save()
+            return redirect('teams_list')
+    else:
+        form=TeamForm(instance=team)
+    return render(request,
+                    'departments/team_edit.html',
+                    {'form':form}
+                    )
+
+@login_required
+def workers_list(request):
+    workers=User.objects.filter(role__in=["operater","team_leader"])
+    return render(request,
+                    'departments/workers_list.html',
+                    {'workers':workers}
+                )
+@login_required
+def worker_detail(request, worker_id):
+    worker=get_object_or_404(User, pk=worker_id)
+    return render(request,
+                    'departments/worker_detail.html',
+                    {'worker':worker}
+                    )
+
+@login_required
+@permission_required('departments.change_user', raise_exception=True)
+def worker_edit(request, worker_id):
+    worker=get_object_or_404(User, pk=worker_id)
+    if request.method=="POST":
+        form=WorkerForm(request.POST, instance=worker)
+        if form.is_valid():
+            form.save()
+            return redirect('workers_list')
+    else:
+        form=WorkerForm(instance=worker)
+    return render(request,
+                    'departments/worker_edit.html',
+                    {'form': form}
+                    )
+
+@login_required
+@permission_required('departments.add_user', raise_exception=True)
+def worker_add(request):
+    if request.method=="POST":
+        form=WorkerCreateForm(request.POST)
+        if form_is_valid():
+            form.save()
+            redirect('workers_list')
+    else:
+        form=WorkerCreateForm()
+    return render(request,
+                    'departments/worker_add.html',
+                    {'form':form}
+                    )

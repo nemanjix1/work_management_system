@@ -20,8 +20,10 @@
             <td>{{team.name}}</td>
             <td>{{team.department}}</td>
             <td>{{team.team_leader.first_name}} {{team.team_leader.last_name}}</td>
-            <td><a href="{% url 'team_detail' team.id %}">Teams detail</a></td>
-            
+            <td><a href="{% url 'team_detail' team.id %}">Teams detail</a>
+                {% if perms.departments.change_team %}
+                    <a href="{% url 'team_edit' team.id %}">Edit</a></td>
+                {% endif %}
         </tr>
         {% empty %}
         <tr>

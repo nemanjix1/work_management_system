@@ -1,5 +1,6 @@
 from django import forms
 from .models import Project,User, Department, Machine,Team
+from django.contrib.auth.forms import UserCreationForm
 
 class ProjectForm(forms.ModelForm):
 
@@ -47,3 +48,28 @@ class TeamForm(forms.ModelForm):
         super().__init__(*args,**kwargs)
 
         self.fields['team_leader'].queryset=User.objects.filter(role='team_leader')
+
+class WorkerForm(forms.ModelForm):
+
+    class Meta:
+        model=User
+        fields=[
+            'department',
+            'team',
+            'role',
+            'phone_number'
+        ]
+
+class WorkerCreateForm(UserCreationForm):
+
+    class Meta:
+        model=User
+        fields=[
+            'username',
+            'first_name',
+            'last_name',
+            'role',
+            'department',
+            'team',
+            'phone_number',
+        ]

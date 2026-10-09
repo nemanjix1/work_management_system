@@ -23,8 +23,15 @@ urlpatterns = [
     path('machines/machine_edit/<int:machine_id>', views.machine_edit, name='machine_edit'),
     path('teams/',views.teams_list, name='teams_list'),
     path('teams/<int:team_id>/', views.team_detail, name='team_detail'),
-    path('teams/team_add',views.team_add, name='team_add'),
-    
+    path('teams/team_add/',views.team_add, name='team_add'),
+    path('teams/team_edit/<int:team_id>/', views.team_edit, name='team_edit'),
+    path('workers/', views.workers_list, name='workers_list'),
+    path('workers/<int:worker_id>/', views.worker_detail, name='worker_detail'),
+    path('workers/worker_edit/<int:worker_id>/', views.worker_edit, name='worker_edit'),
+    path('workers/worker_add/',views.worker_add, name='worker_add'),
+
+
+
 
 ]
     

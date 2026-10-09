@@ -1,0 +1,47 @@
+{% extends 'departments/base.html' %}
+
+{% block content %}
+
+{% if perms.departments.add_user %}
+    <a href="{% url 'worker_add' %}">Add</a>
+{% endif %}
+
+<h1>Workers:</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Employee number</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Team</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in workers %}
+        <tr>
+            <td>{{user.username}}</td>
+            <td>{{user.first_name}}</td>
+            <td>{{user.last_name}} </td>
+            <td>{{user.role}} </td>
+            <td>{{user.department}} </td>
+            <td>{{user.team}} </td>
+            <td>
+            <a href="{% url 'worker_detail' user.id %}">Details</a>
+            {% if perms.departments.change_user %}
+                <a href="{% url 'worker_edit' user.id %}">Edit</a>
+            {% endif %}
+        </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">
+                No workers
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
