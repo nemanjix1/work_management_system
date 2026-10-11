@@ -5,25 +5,40 @@
 <link rel="stylesheet" href="{% static 'departments/css/home.css' %}">
 {% endblock %}
 {% block content %}
+<div class="container"> 
     <h1>DASHBOARD</h1>
-
-    <div class="dashboard-cards">
-        <div class="projects common-card">
-            <h3>Projects</h3>
-            <p>Pregled i upravljanje projektima</p>
-            <a href="{% url 'projects_list' %}">Open</a>
-        </div>
-        <div class="machines common-card">
-            <h3>Machines</h3>
-            <p>Pregled masina i njihovog statusa</p>
-            <a href="#">Open</a>
-        </div>
-        <div class="issues common-card">
-            <h3>Issues</h3>
-            <p>Prijavljeni kvarovi i greske</p>
-            <a href="#">Open</a>
-        </div>
-    </div>
     
+         <div class="dashboard-cards">
+            <div class="projects common-card">
+                <h3>Projects</h3>
+                <p>Pregled i upravljanje projektima</p>
+                <a href="{% url 'projects_list' %}">Open</a>
+            </div>
+            <div class="machines common-card">
+                <h3>Machines</h3>
+                <p>Pregled masina i njihovog statusa</p>
+                <a href="{% url 'machines_list' %}">Open</a>
+            </div>
+            <div class="issues common-card">
+                <h3>Issues</h3>
+                <p>Prijavljeni kvarovi i greske</p>
+                <a href="{% url 'issues_list' %}">Open</a>
+            </div>
+        </div>
+        <div class="audit-link">
+            {% if user.role == 'administrator' %}
+                <a href="{% url 'audit_logs' %}">Audit log</a>
+            {% elif user.role == 'manager' %}
+                <a href="{% url 'audit_logs' %}">Department audit</a>
+            {% elif user.role == 'team_leader' %}
+                <a href="{% url 'audit_logs' %}">Team activity</a>
+            {% elif user.role == 'operater' %}
+                <a href="{% url 'audit_logs' %}">My activity</a>
+            {% endif %}
+        </div>
+    
+    
+    </div>
+   
     
 {% endblock content %}

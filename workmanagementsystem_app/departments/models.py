@@ -216,7 +216,8 @@ class Issue(models.Model):
     max_length=10,
     choices=PRIORITY_CHOICES,
     default='medium'
-)
+    )
+
 
     def __str__(self):
         return f'{self.machine} : {self.reported_at}'
@@ -422,6 +423,7 @@ class ProductionEntry(models.Model):
 
 
 class AttendanceEvent(models.Model):
+
     attendance=models.ForeignKey(
         Attendance,
         on_delete=models.PROTECT
@@ -456,3 +458,17 @@ class AttendanceEvent(models.Model):
         else:
             if self.events!='private_out'and self.events!='business_out':
                 raise ValidationError("nedozvoljena akcija")
+
+class AuditLog(models.Model):
+    user=models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )       
+    action=models.CharField(max_length=100) 
+    object_type=models.CharField(max_length=50)
+    object_id=models.PositiveIntegerField()
+    old_value=models.TextField(blank=True)
+    new_value=models.TextField(blank=True)
+    created_at=models.DateTimeField(auto_now_add=True)        

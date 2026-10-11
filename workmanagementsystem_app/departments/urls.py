@@ -29,9 +29,13 @@ urlpatterns = [
     path('workers/<int:worker_id>/', views.worker_detail, name='worker_detail'),
     path('workers/worker_edit/<int:worker_id>/', views.worker_edit, name='worker_edit'),
     path('workers/worker_add/',views.worker_add, name='worker_add'),
-
-
-
+    path('audit_logs/', views.audit_log_list, name='audit_logs'),
+    path('issues/',views.issues_list, name='issues_list'),
+    path('issues/<int:issue_id>/',views.issue_detail,name='issue_detail'),
+    path('issues/issue_add/', views.issue_add, name='issue_add'),
+    path('issues/issue_status_update/<int:issue_id>/', views.issue_status_update, name='issue_status_update'),
+    path('issues/<int:issue_id>/intervention_add', views.intervention_add, name='intervention_add'),
+    path('issues/interventions/<int:intervention_id>/finish/', views.intervention_finish, name='intervention_finish'),
 
 ]
     

@@ -1,0 +1,50 @@
+{% extends 'departments/base.html' %}
+{% block content %}
+    <div class="container-issue-detail">
+        <div class="left">
+            <ul>
+                <li>Machine: {{issue.machine}}</li>
+                <li>Reported by: {{issue.reported_by}}</li>
+                <li>Reported_at: {{issue.reported_at}}</li>
+                <li>Priority: {{issue.priority}}</li>
+                <li>Issue status: {{issue.issue_status}}</li>
+            </ul>
+            <p>Description: {{issue.description}}</p>
+            {% if perms.departments.add_intervention %}
+                <a href="{% url 'intervention_add' issue.id %}">Add intervention</a>
+            {% endif %}
+            <h2>Status history</h2>
+            {% for change in status_history %}
+                <p>{{change.old_status}} --->>>> {{change.new_status}}</p>
+                <p>{{change.changed_by}}</p>
+                <p>{{change.changed_at}}</p>
+            {% empty %}
+                <p>No status changes yet</p>
+            {% endfor %}
+            <h2>Interventions:</h2>
+            {% for intervention in interventions %}
+                <p>{{intervention.performed_by}}</p>
+                <p>{{intervention.started_at}}</p>
+                {% if intervention.finished_at %}
+                    <p>{{intervention.finished_at}}</p>
+                {% else %}
+                    <p>In progress</p>
+                {% endif %}
+                  {% if not intervention.finished_at %}
+                {% if perms.departments.change_intervention %}
+                <a href="{% url 'intervention_finish' intervention.id %}">Finish intervention</a>
+                {% endif %}
+                {% endif %}
+                <p>{{intervention.description}}</p>
+            {% empty %}
+                <p>No intervention yet</p>
+            {% endfor %}
+        </div>
+        <div class="right">
+            {% if perms.departments.change_issue %}
+                <a href="{% url 'issue_status_update' issue.id %}">Update issue</a>
+            {% endif %}
+          
+        </div>
+    </div>
+{% endblock content %}

@@ -1,6 +1,7 @@
 from django import forms
-from .models import Project,User, Department, Machine,Team
+from .models import Project,User, Department, Issue,Intervention,Machine,Team,IssueStatusChange
 from django.contrib.auth.forms import UserCreationForm
+from .access import get_visible_issues, get_visible_departments,get_visible_teams,get_visible_machines,get_visible_projects
 
 class ProjectForm(forms.ModelForm):
 
@@ -12,6 +13,12 @@ class ProjectForm(forms.ModelForm):
             'status',
             'departments',
         ]
+
+    def __init__(self,*args,current_user=None,**kwargs):
+        super().__init__(*args,**kwargs)
+
+        if current_user:
+                self.fields['departments'].queryset=get_visible_departments(current_user)
 
 class DepartmentForm(forms.ModelForm):
 
@@ -34,6 +41,11 @@ class MachineForm(forms.ModelForm):
             'status',
             'department',
         ]
+    def __init__(self,*args,current_user=None,**kwargs):
+        super().__init__(*args,**kwargs)
+
+        if current_user:
+            self.fields['department'].queryset=get_visible_departments(current_user)
 
 class TeamForm(forms.ModelForm):
 
@@ -44,10 +56,17 @@ class TeamForm(forms.ModelForm):
             'department',
             'team_leader',
             ]
-    def __init__(self,*args,**kwargs):
+    def __init__(self,*args,current_user=None,**kwargs):
         super().__init__(*args,**kwargs)
 
-        self.fields['team_leader'].queryset=User.objects.filter(role='team_leader')
+        if current_user:
+            self.fields['department'].queryset=get_visible_departments(current_user)
+            if current_user.role=='administrator':
+                self.fields['team_leader'].queryset=User.objects.filter(role='team_leader')
+            elif current_user.role=='manager':
+                 self.fields['team_leader'].queryset=User.objects.filter(role='team_leader',department=current_user.department)
+            else:
+                self.fields['team_leader'].queryset=User.objects.none()
 
 class WorkerForm(forms.ModelForm):
 
@@ -59,8 +78,22 @@ class WorkerForm(forms.ModelForm):
             'role',
             'phone_number'
         ]
+    def __init__(self,*args,current_user=None,**kwargs):
+        
+        super().__init__(*args,**kwargs)
+
+        if current_user:
+            self.fields['department'].queryset=get_visible_departments(current_user)
+            self.fields['team'].queryset=get_visible_teams(current_user)
+            if current_user.role=='administrator':
+                self.fields['role'].choices=[('administrator', 'Administrator'),('manager','Manager'),('team_leader','Team_leader'),('operater','Operater')]
+            if current_user.role=='manager':
+               self.fields['role'].choices=[('team_leader','Team_leader'),('operater','Operater')]
+            if current_user.role=='team_leader':
+                self.fields['role'].choices=[('operater','Operater')]
 
 class WorkerCreateForm(UserCreationForm):
+
 
     class Meta:
         model=User
@@ -72,4 +105,47 @@ class WorkerCreateForm(UserCreationForm):
             'department',
             'team',
             'phone_number',
+        ]
+    def __init__(self, *args,current_user=None,**kwargs):
+
+        super().__init__(*args,**kwargs)
+
+        if current_user:
+            self.fields['department'].queryset=get_visible_departments(current_user)
+            self.fields['team'].queryset=get_visible_teams(current_user)
+            if current_user.role=='administrator':
+                self.fields['role'].choices=[('administrator', 'Administrator'),('manager','Manager'),('team_leader','Team_leader'),('operater','Operater')]
+            if current_user.role=='manager':
+               self.fields['role'].choices=[('team_leader','Team_leader'),('operater','Operater')]
+            if current_user.role=='team_leader':
+                self.fields['role'].choices=[('operater','Operater')]
+
+class IssueForm(forms.ModelForm):
+    class Meta:
+
+        model=Issue
+        fields=[
+            'machine',
+            'priority',
+            'description'
+        ]
+    def __init__(self,*args,current_user=None,**kwargs):
+        super().__init__(*args,**kwargs)
+
+        if current_user:
+            self.fields['machine'].queryset=get_visible_machines(current_user)
+
+class IssueStatusForm(forms.ModelForm):
+    class Meta:
+        model=Issue
+        fields=[
+            'issue_status'
+        ]
+
+class InterventionForm(forms.ModelForm):
+    class Meta:
+        model=Intervention
+        fields=[
+            'description',
+            'finished_at'
         ]

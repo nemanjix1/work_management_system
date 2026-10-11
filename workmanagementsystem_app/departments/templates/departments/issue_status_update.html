@@ -1,0 +1,13 @@
+{% extends 'departments/base.html' %}
+{% block content %}
+    <h2>Change issue status</h2>
+    <p> Issue: {{issue.id}}</p>
+    <p>{{issue.issue_status}}</p>
+    <form method="post">
+     {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">Update issue status</button>
+</form>
+    <a href="{% url 'issue_detail' issue.id %}">Back to issue</a>
+   
+{% endblock content %}

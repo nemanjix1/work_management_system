@@ -1,0 +1,21 @@
+{% extends 'departments/base.html' %}
+
+{% block content %}
+
+<h2>Finish intervention</h2>
+
+<p>Issue: {{ issue.id }}</p>
+<p>Machine: {{ issue.machine }}</p>
+<p>Performed by: {{ intervention.performed_by }}</p>
+<p>Started at: {{ intervention.started_at }}</p>
+
+<p>Are you sure you want to finish this intervention?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, finish intervention</button>
+</form>
+
+<a href="{% url 'issue_detail' issue.id %}">Cancel</a>
+
+{% endblock content %}

@@ -1,7 +1,15 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    min-height: 100%;
+
+}
 .dashboard-cards{
     display: flex;
     gap: 16px;
     flex-wrap: wrap;
+    width:100%;
 }
 h1{
     font-size: 32px;
@@ -57,6 +65,30 @@ h1{
     color: gray;
     line-height: 1.5;
     
+}
+.audit-link{
+    width:100%;
+    text-align: center;
+    margin-bottom:20px;
+    border:1px solid black;
+    display: flex;
+    justify-content: center;
+    margin-top:auto;
+    padding-top:32px;
+    padding-bottom: 20px;
+  
+}
+.audit-link a{
+    padding:20px;
+    border-radius:8px;
+    background-color:rgb(56, 117, 56);
+    color:black;
+    text-decoration: none;
+    text-align: center;
+}
+.audit-link a:hover{
+    background-color: yellowgreen;
+    color: grey;
 }
   
 

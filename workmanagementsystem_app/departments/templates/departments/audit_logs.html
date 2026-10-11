@@ -1,0 +1,36 @@
+{% extends 'departments/base.html' %}
+{% block content %}
+    <h2>Audit log</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>time</th>
+                <th>user</th>
+                <th>action</th>
+                <th>type of object</th>
+                <th>object_id</th>
+                <th>old value</th>
+                <th>new value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for audit in audit_logs %}
+                <tr>
+                    <td>{{audit.created_at}}</td>
+                    <td>{{audit.user}}</td>
+                    <td>{{audit.action}}</td>
+                    <td>{{audit.object_type}}</td>
+                    <td>{{audit.object_id}}</td>
+                    <td>{{audit.old_value}}</td>
+                    <td>{{audit.new_value}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">
+                        No audit logs
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}
