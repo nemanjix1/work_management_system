@@ -1,12 +1,12 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import User,AuditLog,Attendance,AttendanceEvent,Project,Department,Machine,Team,IssueStatusChange,Intervention
+from .models import User,AuditLog,Attendance,AttendanceEvent,Project,Department,Machine,Team,IssueStatusChange,Intervention,Comment,Issue
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import ProjectForm,DepartmentForm,InterventionForm,WorkerForm,IssueStatusForm,WorkerCreateForm,MachineForm,TeamForm,IssueForm
+from .forms import ProjectForm,DepartmentForm,InterventionForm,CommentForm,WorkerForm,IssueStatusForm,WorkerCreateForm,MachineForm,TeamForm,IssueForm
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from .access import get_visible_workers,get_visible_issues, get_visible_teams,get_visible_projects,get_visible_departments,get_visible_machines,get_visible_audit
@@ -541,14 +541,30 @@ def issue_detail(request, issue_id):
     issue=get_object_or_404(visible_issues,pk=issue_id)
     status_history=IssueStatusChange.objects.filter(issue=issue).order_by('-changed_at')
     interventions=Intervention.objects.filter(issue=issue).order_by('-started_at')
+    comments=Comment.objects.filter(issue=issue).order_by('-created_at')
+    comment_form=CommentForm()
+    activity=[]
+    for comment in comments:
+            activity.append({"type":"COMMENT", "object":comment,
+                            "time":comment.created_at})
+    for change in status_history:
+            activity.append({"type":"STATUS_CHANGE", "object":change,
+                            "time":change.changed_at})
+    for intervention in interventions:
+            activity.append({"type":"INTERVENTION", "object":intervention,
+                            "time":intervention.started_at})   
+    activity.sort(key= lambda item: item["time"],
+                    reverse=True)
     return render(request,
                     'departments/issue_detail.html',
                     {'issue': issue,
-                     'status_history': status_history,
-                     'interventions': interventions}
+                     'comment_form': comment_form,
+                     'activity': activity}
                     
                     )
+
 @login_required
+@permission_required('departments.add_issue', raise_exception=True)
 def issue_add(request):
     if request.method=='POST':
         form=IssueForm(request.POST, current_user=request.user)
@@ -556,6 +572,19 @@ def issue_add(request):
             issue=form.save(commit=False)
             issue.reported_by=request.user
             issue.save()
+            machine=issue.machine
+            old_machine_status=machine.status
+            machine.status="broken"
+            machine.save(update_fields=["status"])
+            if old_machine_status!=machine.status:
+                AuditLog.objects.create(
+                    user=request.user,
+                    action='machine_status_changed',
+                    object_type='Machine',
+                    object_id=machine.id,
+                    old_value=old_machine_status,
+                    new_value=machine.status
+                )
 
             AuditLog.objects.create(
                 user=request.user,
@@ -588,6 +617,30 @@ def issue_status_update(request, issue_id):
             updated_issue.full_clean()
             new_status=updated_issue.issue_status
             updated_issue.save()
+            machine=issue.machine
+            old_machine_status=machine.status
+            if new_status=="in_progress":
+                machine.status="maintenance"
+                machine.save(update_fields=["status"])
+            elif new_status in ["resolved", "closed"]:
+
+                other_active_issues = Issue.objects.filter(
+                    machine=machine,issue_status__in=["open", "in_progress"]
+                         ).exclude(pk=issue.id)
+
+                if other_active_issues.filter(issue_status="in_progress").exists():
+                            machine.status = "maintenance"
+
+                elif other_active_issues.filter(issue_status="open").exists():
+                        machine.status = "broken"
+                else:
+                    machine.status = "active"
+                machine.save(update_fields=["status"])
+            if old_machine_status!=machine.status:
+                AuditLog.objects.create(user=request.user, action="machine_status_changed",
+                                        object_type="Machine", object_id=machine.id,
+                                        old_value=old_machine_status,new_value=machine.status)
+
             issue_status_change=IssueStatusChange.objects.create(
                 issue=issue,
                 old_status=old_status,
@@ -610,6 +663,7 @@ def issue_status_update(request, issue_id):
     )
 
 @login_required
+@permission_required('departments.add_intervention', raise_exception=True)
 def intervention_add(request,issue_id):
 
     visible_issues=get_visible_issues(request.user)
@@ -635,6 +689,7 @@ def intervention_add(request,issue_id):
 @login_required
 @permission_required('departments.change_intervention', raise_exception=True)
 def intervention_finish(request, intervention_id):
+
     intervention=get_object_or_404(Intervention, pk=intervention_id)
     visible_issues=get_visible_issues(request.user)
     issue=get_object_or_404(visible_issues, pk=intervention.issue.id)
@@ -655,3 +710,22 @@ def intervention_finish(request, intervention_id):
                         'issue': issue
                         }
                 )
+
+@login_required
+def comment_add(request,issue_id):
+    
+    visible_issues=get_visible_issues(request.user)
+    issue=get_object_or_404(visible_issues,pk=issue_id)
+    if request.method=="POST":
+        form=CommentForm(request.POST)
+        if form.is_valid():
+            comment=form.save(commit=False)
+            comment.issue=issue
+            comment.author=request.user
+            comment.save()
+
+            return redirect('issue_detail', issue.id)
+        else:
+            return redirect('issue_detail', issue.id)
+    else:
+        return redirect('issue_detail', issue.id)

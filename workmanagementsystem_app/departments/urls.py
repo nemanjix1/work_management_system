@@ -36,6 +36,7 @@ urlpatterns = [
     path('issues/issue_status_update/<int:issue_id>/', views.issue_status_update, name='issue_status_update'),
     path('issues/<int:issue_id>/intervention_add', views.intervention_add, name='intervention_add'),
     path('issues/interventions/<int:intervention_id>/finish/', views.intervention_finish, name='intervention_finish'),
+    path('issues/<int:issue_id>/comment_add', views.comment_add, name='comment_add'),
 
 ]
     

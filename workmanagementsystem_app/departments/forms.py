@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project,User, Department, Issue,Intervention,Machine,Team,IssueStatusChange
+from .models import Project,User, Department, Issue,Intervention,Machine,Team,IssueStatusChange,Comment
 from django.contrib.auth.forms import UserCreationForm
 from .access import get_visible_issues, get_visible_departments,get_visible_teams,get_visible_machines,get_visible_projects
 
@@ -143,9 +143,18 @@ class IssueStatusForm(forms.ModelForm):
         ]
 
 class InterventionForm(forms.ModelForm):
+
     class Meta:
         model=Intervention
         fields=[
             'description',
             'finished_at'
+        ]
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model=Comment
+        fields=[
+            'text'
         ]

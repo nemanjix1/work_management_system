@@ -13,38 +13,46 @@
             {% if perms.departments.add_intervention %}
                 <a href="{% url 'intervention_add' issue.id %}">Add intervention</a>
             {% endif %}
-            <h2>Status history</h2>
-            {% for change in status_history %}
-                <p>{{change.old_status}} --->>>> {{change.new_status}}</p>
-                <p>{{change.changed_by}}</p>
-                <p>{{change.changed_at}}</p>
-            {% empty %}
-                <p>No status changes yet</p>
-            {% endfor %}
-            <h2>Interventions:</h2>
-            {% for intervention in interventions %}
-                <p>{{intervention.performed_by}}</p>
-                <p>{{intervention.started_at}}</p>
-                {% if intervention.finished_at %}
-                    <p>{{intervention.finished_at}}</p>
-                {% else %}
-                    <p>In progress</p>
-                {% endif %}
-                  {% if not intervention.finished_at %}
-                {% if perms.departments.change_intervention %}
-                <a href="{% url 'intervention_finish' intervention.id %}">Finish intervention</a>
-                {% endif %}
-                {% endif %}
-                <p>{{intervention.description}}</p>
-            {% empty %}
-                <p>No intervention yet</p>
-            {% endfor %}
+            <form method="POST" action="{% url 'comment_add' issue.id %}">
+                {% csrf_token %}
+                {{comment_form}}
+                <button type="submit">Send</button>
+            </form>
         </div>
         <div class="right">
             {% if perms.departments.change_issue %}
                 <a href="{% url 'issue_status_update' issue.id %}">Update issue</a>
             {% endif %}
-          
+            <h2>Activity</h2>
+
+            {% for item in activity %}
+                {% if item.type == "COMMENT" %}
+                    <p>Author: {{item.object.author}}</p>
+                    <p>Created_at: {{item.object.created_at}}</p>
+                    <p>Text: {{item.object.text}}</p>
+                {% elif item.type == "STATUS_CHANGE" %}
+                    <p>Status changed</p>
+                    <p>{{item.object.old_status}}----->>>>{{item.object.new_status}}</p>
+                    <p>{{item.object.changed_by}}</p>
+                    <p>{{item.object.changed_at}}</p>
+                {% elif item.type == "INTERVENTION" %}
+                    <p>{{item.object.performed_by}}</p>
+                    <p>{{item.object.started_at}}</p>
+                    <p>{{item.object.description}}</p>
+                    {% if item.object.finished_at  %}
+                        <p>{{item.object.finished_at}}</p>
+                    {% else %}
+                        <p>In progress</p>
+                        {% if perms.departments.change_intervention %}
+                        <a href="{% url 'intervention_finish' item.object.id %}">Finish</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% empty %}
+            <p>No activity yet</p>
+            {% endfor %}
+
+            
         </div>
     </div>
 {% endblock content %}
