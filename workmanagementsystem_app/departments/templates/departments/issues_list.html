@@ -1,4 +1,8 @@
 {% extends 'departments/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'departments/css/issues.css' %}">
+{% endblock %}
 {% block content %}
     <h2>Issues list</h2>
     <a href="{% url 'issue_add' %}">Report new issue</a>

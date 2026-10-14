@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
@@ -471,4 +473,30 @@ class AuditLog(models.Model):
     object_id=models.PositiveIntegerField()
     old_value=models.TextField(blank=True)
     new_value=models.TextField(blank=True)
-    created_at=models.DateTimeField(auto_now_add=True)        
+    created_at=models.DateTimeField(auto_now_add=True)     
+
+class Attachment(models.Model):
+    file=models.FileField(
+        upload_to='attachments/'
+    ) 
+
+    uploaded_by=models.ForeignKey(
+        'User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    uploaded_at=models.DateTimeField(auto_now_add=True)
+
+    content_type=models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE
+    )
+    object_id=models.PositiveIntegerField()
+    content_object=GenericForeignKey(
+        'content_type',
+        'object_id'
+    )
+
+    def __str__(self):
+        return self.file.name

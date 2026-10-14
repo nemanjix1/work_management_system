@@ -1,0 +1,82 @@
+.machine-container{
+    background-color: red;
+    display:flex;
+    gap:100px;
+    max-width:100vw;
+    padding:20px;
+    height: 100vh;
+    background: #f4f6f8;
+}
+.machine-container-left{
+    flex:1;
+    height:50%;
+    margin:20px;
+    padding:20px;
+    border:1px solid black;
+    border-radius:8px;
+}
+
+.machine-container-right{
+    flex:2;
+    padding:20px;
+}
+.issue-card{
+    margin-bottom:20px;
+    padding:20px;
+    border:1px solid black;
+    border-radius:8px;
+    background: white;
+}
+.older-issues summary{
+    cursor:pointer;
+    font-weight: bold;
+    margin-bottom:20px;
+    padding:20px;
+}
+
+.priority-badge,
+.status-badge,
+.machine-status{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight: bold;
+    text-transform:uppercase ;
+}
+.priority-badge.high{
+      background: #ffd6d6;
+}
+.priority-badge.medium{
+     background: #fff0b3;
+}
+.priority-badge.low{
+     background: #d9f2d9;
+}
+
+.status-badge.open{
+    background: #ffd6d6;
+}
+.status-badge.in_progress{
+     background: #ffe0b3;
+}
+.status-badge.resolved{
+    background: #d9f2d9;
+}
+.status-badge.closed{
+     background: #e0e0e0;
+}
+
+.machine-status.active{
+    background: #327832;
+}
+.machine-status.broken{
+    background: rgb(175, 56, 56);
+}
+.machine-status.maintenance{
+    background:gray;
+}
+.machine-status.inactive{
+    background: black;
+    color:white;
+}

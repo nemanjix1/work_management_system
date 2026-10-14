@@ -37,6 +37,8 @@ urlpatterns = [
     path('issues/<int:issue_id>/intervention_add', views.intervention_add, name='intervention_add'),
     path('issues/interventions/<int:intervention_id>/finish/', views.intervention_finish, name='intervention_finish'),
     path('issues/<int:issue_id>/comment_add', views.comment_add, name='comment_add'),
+    path('issues/<int:issue_id>/attachment_add/',views.issue_attachment_add, name='issue_attachment_add'),
+    path('attachments/<int:attachment_id>/delete/',views.attachment_delete, name='attachment_delete')
 
 ]
     

@@ -1,5 +1,8 @@
 {% extends 'departments/base.html' %}
-
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'departments/css/workers.css' %}">
+{% endblock %}
 {% block content %}
 
 {% if perms.departments.add_user %}

@@ -1,13 +1,15 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import User,AuditLog,Attendance,AttendanceEvent,Project,Department,Machine,Team,IssueStatusChange,Intervention,Comment,Issue
+from .models import User,AuditLog,Attendance,Attachment, AttendanceEvent,Project,Department,Machine,Team,IssueStatusChange,Intervention,Comment,Issue
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import ProjectForm,DepartmentForm,InterventionForm,CommentForm,WorkerForm,IssueStatusForm,WorkerCreateForm,MachineForm,TeamForm,IssueForm
+from .forms import AttachmentForm,ProjectForm,DepartmentForm,InterventionForm,CommentForm,WorkerForm,IssueStatusForm,WorkerCreateForm,MachineForm,TeamForm,IssueForm
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
+from django.http import Http404
 from django.core.paginator import Paginator
 from .access import get_visible_workers,get_visible_issues, get_visible_teams,get_visible_projects,get_visible_departments,get_visible_machines,get_visible_audit
 def attendance_login_page(request):
@@ -317,9 +319,14 @@ def machines_list(request):
 def machine_detail(request, machine_id):
     visible_machines=get_visible_machines(request.user)
     machine=get_object_or_404(visible_machines,pk=machine_id)
+    issues=Issue.objects.filter(machine=machine).order_by('-reported_at')
+    latest_issue=issues.first()
+    older_issues=issues[1:]
     return render(request,
                     'departments/machine_detail.html',
-                    {'machine': machine}
+                    {'machine': machine,
+                     'latest_issue':latest_issue,
+                     'older_issues': older_issues}
                     )
 
 @login_required
@@ -542,7 +549,12 @@ def issue_detail(request, issue_id):
     status_history=IssueStatusChange.objects.filter(issue=issue).order_by('-changed_at')
     interventions=Intervention.objects.filter(issue=issue).order_by('-started_at')
     comments=Comment.objects.filter(issue=issue).order_by('-created_at')
+    issue_content_type=ContentType.objects.get_for_model(Issue)
+    attachments=Attachment.objects.filter(content_type=issue_content_type,
+                                            object_id=issue.id)
+
     comment_form=CommentForm()
+    attachment_form=AttachmentForm()
     activity=[]
     for comment in comments:
             activity.append({"type":"COMMENT", "object":comment,
@@ -559,6 +571,8 @@ def issue_detail(request, issue_id):
                     'departments/issue_detail.html',
                     {'issue': issue,
                      'comment_form': comment_form,
+                     'attachments': attachments,
+                     'attachment_form': attachment_form,
                      'activity': activity}
                     
                     )
@@ -713,7 +727,8 @@ def intervention_finish(request, intervention_id):
 
 @login_required
 def comment_add(request,issue_id):
-    
+
+
     visible_issues=get_visible_issues(request.user)
     issue=get_object_or_404(visible_issues,pk=issue_id)
     if request.method=="POST":
@@ -729,3 +744,41 @@ def comment_add(request,issue_id):
             return redirect('issue_detail', issue.id)
     else:
         return redirect('issue_detail', issue.id)
+@login_required
+def issue_attachment_add(request,issue_id):
+    visible_issues=get_visible_issues(request.user)
+    issue=get_object_or_404(visible_issues, pk=issue_id)
+    if request.method=="POST":
+        attachment_form=AttachmentForm(request.POST,request.FILES)
+        if attachment_form.is_valid():
+            attachment=attachment_form.save(commit=False)
+            attachment.uploaded_by=request.user
+            attachment.content_object=issue
+            attachment.save()
+            return redirect('issue_detail', issue.id)
+    return redirect('issue_detail', issue.id)
+
+@login_required
+def attachment_delete(request,attachment_id):
+    attachment=get_object_or_404(Attachment,pk=attachment_id)
+    target=attachment.content_object
+    if not isinstance(target, Issue):
+        raise Http404
+    visible_issues=get_visible_issues(request.user)
+    issue=get_object_or_404(visible_issues, pk=target.id)
+    if request.method=="POST":
+        file=attachment.file
+        attachment.delete()
+
+        if file:
+            file.delete(save=False)
+
+        return redirect('issue_detail', issue.id)
+    return render(request,
+            'departments/attachment_delete_confirm.html',
+            {'attachment': attachment,
+             'issue': issue}
+             )
+
+    
+

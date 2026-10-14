@@ -1,8 +1,71 @@
 {% extends 'departments/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'departments/css/machine-detail.css' %}">
+{% endblock %}
 {% block content %}
-    <h2>Machine's detail</h2>
-    <p>{{machine.name}}</p>
-    <p>{{machine.code}}</p>
-    <p>{{machine.status}}</p>
-    <p>{{machine.department}}</p>
+<div class="machine-container">
+  
+    <div class="machine-container-left">
+        <h2>Machine's detail</h2>
+        <p>Name: {{machine.name}}</p>
+        <p>Code: {{machine.code}}</p>
+        <p>Status:
+            <span class="machine-status {{machine.status}}">
+                {{machine.status}}
+            </span>
+        </p>
+        <p>Department: {{machine.department}}</p>
+    </div>
+    <div class="machine-container-right">
+        <h2>Latest Issue</h2>
+        {% if latest_issue %}
+            <div class="issue-card">
+                <p>ID: {{latest_issue.id}}</p>
+                <p>PRIORITY: 
+                    <span class="priority-badge {{latest_issue.priority}}">
+                    {{latest_issue.priority}}
+                </span>
+                </p>
+                <p>STATUS: 
+                    <span class="status-badge {{latest_issue.issue_status}}">
+                        {{latest_issue.issue_status}}
+                    </span>
+                </p>
+                <p>REPORTED BY: {{latest_issue.reported_by}}</p>
+                <p>REPORTED AT: {{latest_issue.reported_at}}</p>
+                <a href="{% url 'issue_detail' latest_issue.id %}">Issue</a>
+            </div>
+        {% else %}
+            <p>No issues for this machine</p>
+        {% endif %}
+        {% if older_issues %}
+        <details class="older-issues">
+            <summary>Previous issues</summary>
+             {% for issue in older_issues %}
+                <div class="issue-card">
+                    <p>ID: {{issue.id}}</p>
+                    <p>PRIORITY: 
+                        <span class="priority-badge {{issue.priority}}">
+                        {{issue.priority}}
+                        </span>
+                     </p>
+                    <p>STATUS: 
+                        <span CLASS="status-badge {{issue.issue_status}}">
+                            {{issue.issue_status}}
+                        </span>
+                    </p>
+                    <p>REPORTED BY: {{issue.reported_by}}</p>
+                    <p>REPORTED AT: {{issue.reported_at}}</p>
+                    <a href="{% url 'issue_detail' issue.id %}">Issue</a>
+                </div>    
+               {% endfor %}
+        </details>
+    {% endif %}
+       
+    </div>
+  
+  
+</div>
+   
 {% endblock content %}

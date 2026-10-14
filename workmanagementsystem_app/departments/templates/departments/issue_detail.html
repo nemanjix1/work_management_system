@@ -1,4 +1,5 @@
 {% extends 'departments/base.html' %}
+
 {% block content %}
     <div class="container-issue-detail">
         <div class="left">
@@ -18,6 +19,23 @@
                 {{comment_form}}
                 <button type="submit">Send</button>
             </form>
+            <form method="POST" action="{% url 'issue_attachment_add' issue.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{attachment_form}}
+                <button type="submit">Upload</button>
+            </form>
+            <h2>Attachments</h2>
+            {% for attachment in attachments %}
+            <div>
+                <p>File: {{attachment.file.name}}</p>
+                <p>Upload by: {{attachment.uploaded_by}}</p>
+                <p>Upload at: {{attachment.uploaded_at}}</p>
+                <a href="{{attachment.file.url}}" target="_blank">Open file</a>
+                <a href="{% url 'attachment_delete' attachment.id %}">Delete</a>
+            </div>
+            {% empty %}
+            <p>No attachments yet</p>
+            {% endfor %}
         </div>
         <div class="right">
             {% if perms.departments.change_issue %}

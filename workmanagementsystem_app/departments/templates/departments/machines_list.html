@@ -1,6 +1,9 @@
 {% extends 'departments/base.html' %}
-
-{% block content %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'departments/css/machines.css' %}">
+{% endblock %}
+{%block content %}
 {% if perms.departments.add_machine %}
     <a href="{% url 'machine_add' %}">Add machine</a>
 {% endif %}
@@ -10,7 +13,7 @@
         <tr>
             <th>Name</th>
             <th>Code</th>
-            <th>Status</th>
+            <th>Status></th>
             <th>Department</th>
             <th>Actions</th>
         </tr>
@@ -20,7 +23,11 @@
         <tr>
             <td>{{machine.name}}</td>
             <td>{{machine.code}}</td>
-            <td>{{machine.status}}</td>
+            <td>Status:
+                <span class="machine-status {{machine.status}}">
+                    {{machine.status}}
+                </span>
+            </td>
             <td>{{machine.department}}</td>
             <td>
                 {% if perms.departments.change_machine %}
